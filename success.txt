@@ -1,1 +1,6 @@
-123
+vue init webpack vue-music
+npm i babel-runtime --save
+npm i fastclick --save
+npm i babel-polyfill --save-dev
+npm i jsonp@0.2.1 --save
+npm i better-scroll --save

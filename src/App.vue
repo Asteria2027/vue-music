@@ -1,23 +1,26 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
+    <MHeader></MHeader>
+    <tab></tab>
     <router-view></router-view>
   </div>
 </template>
 
-<script>
+<script type="text/ecmascript-6">
+  import MHeader from  './components/m-header/m-header.vue';
+  import tab from './components/tab/tab.vue';
+
 export default {
-  name: 'app'
+ components:{
+   MHeader,
+   tab
+ }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped lang="stylus" rel="stylesheet/stylus">
+ @import "./common/stylus/variable.styl";
+
+  #app
+    color: $color-theme
 </style>
