@@ -4,3 +4,5 @@ npm i fastclick --save
 npm i babel-polyfill --save-dev
 npm i jsonp@0.2.1 --save
 npm i better-scroll --save
+npm i axios --save
+npm i vue-lazyload --save
