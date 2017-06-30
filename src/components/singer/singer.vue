@@ -1,6 +1,6 @@
 <template>
     <div class="singer">
-
+      <ListView :data="singers"></ListView>
     </div>
 </template>
 
@@ -8,6 +8,7 @@
   import {getSingerList} from '../../api/singer';
   import {ERR_OK} from '../../api/config';
   import Singer from '../../common/js/singer';
+  import ListView from '../../base/listview/listview.vue';
 
   const HOT_NAME = '热门';
   const HOT_SINGER_LEN = 10;
@@ -25,8 +26,7 @@
       _getSingerList(){
         getSingerList().then((res)=>{
           if(res.code === ERR_OK){
-            this.singers = res.data.list;
-            console.log(this._normalizeSinger(this.singers))
+            this.singers = this._normalizeSinger(res.data.list);
           }
         })
       },
@@ -44,7 +44,7 @@
               name: item.Fsinger_name
             }))
           }
-          const key = item.findex;
+          const key = item.Findex;
           if(!map[key]){
             map[key] = {
               title: key,
@@ -54,11 +54,29 @@
           map[key].items.push({
             id: item.Fsinger_mid,
             name: item.Fsinger_name,
-            avatar: `https://y.gtimg.cn/music/photo_new/T001R300x300M000${item.Fsinger.mid}.jpg?max_age=2592000`
+            avatar: `https://y.gtimg.cn/music/photo_new/T001R300x300M000${item.Fsinger_mid}.jpg?max_age=2592000`
           })
-        })
-        console.log(map)
+        });
+//        console.log(map)
+//        为了得到有序列表，需要处理 map
+        let hot = [];
+        let ret = [];
+        for(let key in map) {
+          let val = map[key];
+          if(val.title.match(/[a-zA-Z]/)){
+            ret.push(val);
+          }else if(val.title === HOT_NAME) {
+            hot.push(val);
+          }
+        }
+        ret.sort((a, b) => {
+          return a.title.charCodeAt(0) - b.title.charCodeAt(0);
+        });
+        return hot.concat(ret);
       }
+    },
+    components:{
+      ListView
     }
   }
 </script>
