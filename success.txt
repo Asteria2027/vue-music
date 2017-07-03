@@ -6,3 +6,4 @@ npm i jsonp@0.2.1 --save
 npm i better-scroll --save
 npm i axios --save
 npm i vue-lazyload --save
+npm i vuex --save

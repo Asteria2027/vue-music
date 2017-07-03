@@ -11,7 +11,7 @@
       <li v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <ul>
-          <li v-for="item in group.items" class="list-group-item">
+          <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
             <img class="avatar" v-lazy="item.avatar" alt="">
             <span class="name">{{item.name}}</span>
           </li>
@@ -29,14 +29,22 @@
         </li>
       </ul>
     </div>
+    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+      <h1 class="fixed-title">{{fixedTitle}}</h1>
+    </div>
+    <div class="loading-container" v-show="!data.length">
+      <Loading></Loading>
+    </div>
   </Scroll>
 </template>
 
 <script type="text/ecmascript-6">
   import Scroll from '../../base/scroll/scroll.vue';
+  import Loading from '../../base/loading/loading.vue';
   import { getData } from '../../common/js/dom';
 
   const ANCHOR_HEIGHT = 18;
+  const TITLE_HEIGHT = 30;
 
   export default {
     created() {
@@ -48,7 +56,8 @@
     data() {
       return {
         scrollY: -1,
-        currentIndex: 0
+        currentIndex: 0,
+        diff:-1
       }
     },
     props: {
@@ -58,16 +67,26 @@
       }
     },
     components:{
-      Scroll
+      Scroll,
+      Loading
     },
     computed: {
       shortcutList() {
         return this.data.map((group)=>{
           return group.title.substr(0,1);
         })
+      },
+      fixedTitle() {
+        if(this.scrollY>0){
+          return '';
+        }
+        return this.data[this.currentIndex]?this.data[this.currentIndex].title:''
       }
     },
     methods:{
+      selectItem(item){
+        this.$emit('select',item);
+      },
       onShortcutTouchStart(e){
         let anchorIndex = getData(e.target,'index');
         let firstTouch = e.touches[0];
@@ -83,6 +102,15 @@
         this._scrollTo(anchorIndex);
       },
       _scrollTo(index) {
+        if(!index && index!==0){
+          return;
+        }
+        if(index<0) {
+          index=0;
+        }else if(index>this.listHeight.length-2) {
+          index = index>this.listHeight.length-2;
+        }
+        this.scrollY = -this.listHeight[index];
         this.$refs.listview.scrollToElement(this.$refs.listGroup[index],0)
       },
       _calculateHeight(){
@@ -117,13 +145,22 @@
         for(let i=0; i<listHeight.length-1; i++) {
           let heigth1 = listHeight[i];
           let heigth2 = listHeight[i+1];
-          if(!heigth2 || (-newY > heigth1 && -newY < heigth2)){
+          if(-newY >= heigth1 && -newY < heigth2){
             this.currentIndex = i;
+            this.diff = heigth2 + newY;
             return;
           }
         }
         // 当滚动到底部，且-newY大于最后一个元素的上限
         this.currentIndex = listHeight.length-2;
+      },
+      diff(newVal) {
+        let fixedTop = (newVal>0 && newVal<TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+        if(this.fixedTop === fixedTop) {
+          return;
+        }
+        this.fixedTop = fixedTop;
+        this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)`
       }
     }
   }
