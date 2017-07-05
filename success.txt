@@ -7,3 +7,6 @@ npm i better-scroll --save
 npm i axios --save
 npm i vue-lazyload --save
 npm i vuex --save
+npm i create-keyframe-animation --save
+npm i js-base64 --save
+npm i lyric-parser --save
