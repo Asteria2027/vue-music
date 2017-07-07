@@ -124,6 +124,9 @@
           this.listHeight.push(height);
         }
       },
+      refresh(){
+        this.$refs.listview.refresh();
+      },
       scroll(pos){
         this.scrollY = pos.y;
       }
