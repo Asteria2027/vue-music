@@ -312,7 +312,6 @@
         })
       },
       handleLyric({lineNum, txt}){
-        console.log(lineNum);
         this.currentLineNum = lineNum;
         if(lineNum>5){
           let lineEl = this.$refs.lyricLine[lineNum-5];

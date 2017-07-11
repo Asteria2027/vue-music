@@ -10,3 +10,4 @@ npm i vuex --save
 npm i create-keyframe-animation --save
 npm i js-base64 --save
 npm i lyric-parser --save
+npm i good-storage --save
