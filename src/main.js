@@ -10,6 +10,10 @@ import store from './store'
 
 import './common/stylus/index.styl';
 
+import vConsole from 'vconsole'
+
+console.log('test')
+
 fastclick.attach(document.body);
 
 Vue.use(VueLazyLoad,{

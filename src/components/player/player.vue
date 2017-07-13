@@ -95,11 +95,12 @@
             <i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
           </ProgressCircle>
         </div>
-        <div class="control">
+        <div class="control" @click="showPlaylist">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
+    <playlist ref="playlist"></playlist>
     <audio ref="audio" :src="currentSong.url" @canplay="ready" @error="error" @timeupdate="updateTime" @ended="end"></audio>
   </div>
 </template>
@@ -114,6 +115,7 @@
   import {shuffle} from '../../common/js/util';
   import Lyric from 'lyric-parser';
   import Scroll from '../../base/scroll/scroll.vue';
+  import Playlist from '../../components/playlist/playlist.vue';
 
   const transform = prefixStyle('transform');
   const transitionDuration = prefixStyle('transitionDuration');
@@ -321,6 +323,9 @@
         }
         this.playingLyric = txt;
       },
+      showPlaylist(){
+        this.$refs.playlist.show();
+      },
       middleTouchStart(e){
         this.touch.initiated = true;
         // 用来判断是否是一次移动
@@ -429,11 +434,17 @@
     },
     watch:{
       currentSong(newSong, oldSong) {
+        if(!newSong.id){
+          return;
+        }
         if(newSong.id === oldSong.id){
           return;
         }
         if(this.currentLyric){
           this.currentLyric.stop();
+          this.currentTime = 0;
+          this.playingLyric = '';
+          this.currentLineNum = 0;
         }
         setTimeout(()=>{
           this.$refs.audio.play();
@@ -450,7 +461,8 @@
     components:{
       ProgressBar,
       ProgressCircle,
-      Scroll
+      Scroll,
+      Playlist
     }
   }
 </script>
